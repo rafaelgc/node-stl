@@ -45,18 +45,6 @@ class STLMeasures {
    * @param triangle
    */
   addTriangle(triangle) {
-    let currentVolume = this.constructor._triangleVolume(triangle);
-    this.volume += currentVolume;
-
-    const ab = triangle[1].clone().sub(triangle[0]);
-    const ac = triangle[2].clone().sub(triangle[0]);
-
-    this.area +=
-      ab
-        .clone()
-        .cross(ac)
-        .length() / 2;
-
     const tminx = Math.min(triangle[0].x, triangle[1].x, triangle[2].x);
     this.minx = tminx < this.minx ? tminx : this.minx;
     const tmaxx = Math.max(triangle[0].x, triangle[1].x, triangle[2].x);
@@ -71,21 +59,6 @@ class STLMeasures {
     this.minz = tminz < this.minz ? tminz : this.minz;
     const tmaxz = Math.max(triangle[0].z, triangle[1].z, triangle[2].z);
     this.maxz = tmaxz > this.maxz ? tmaxz : this.maxz;
-
-    // Center of Mass calculation
-    // adapted from c++ at: https://stackoverflow.com/a/2085502/6482703
-    this.xCenter +=
-      ((triangle[0].x + triangle[1].x + triangle[2].x) / 4) * currentVolume;
-    this.yCenter +=
-      ((triangle[0].y + triangle[1].y + triangle[2].y) / 4) * currentVolume;
-    this.zCenter +=
-      ((triangle[0].z + triangle[1].z + triangle[2].z) / 4) * currentVolume;
-    
-    // edge array
-    // edge: {v: [] - vector coordinates, p: int - pair edge index}
-    this.edges.push({v: [triangle[0].x, triangle[0].y, triangle[0].z, triangle[1].x, triangle[1].y, triangle[1].z], p: undefined}, 
-      {v: [triangle[1].x, triangle[1].y, triangle[1].z, triangle[2].x, triangle[2].y, triangle[2].z], p: undefined},
-      {v: [triangle[2].x, triangle[2].y, triangle[2].z, triangle[0].x, triangle[0].y, triangle[0].z], p: undefined});
   }
 
   /**
@@ -109,7 +82,7 @@ class STLMeasures {
       ],
       area: this.area,
       centerOfMass: [this.xCenter, this.yCenter, this.zCenter],
-      isWatertight: this._isWatertight()
+      isWatertight: false
     };
   }
 
